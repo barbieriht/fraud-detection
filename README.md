@@ -6,7 +6,7 @@ concepts, the strategies tried and the reasons behind each choice.
 
 | # | Project | Dataset | Focus | Status |
 |---|---|---|---|---|
-| 1 | [Credit card fraud](projects/01_ulb_creditcard/) | ULB Credit Card Fraud | Class imbalance, anomaly detection, cost-based thresholds | In progress |
+| 1 | [Credit card fraud](projects/01_ulb_creditcard/) | ULB Credit Card Fraud | Class imbalance, anomaly detection, cost-based decisions, SHAP | Done |
 | 2 | E-commerce fraud | IEEE-CIS | Feature engineering, gradient boosting, time-based validation | Planned |
 | 3 | Account-opening fraud | Bank Account Fraud (Feedzai) | Fairness, distribution shift, alert budgets | Planned |
 | 4 | Money laundering | Elliptic Bitcoin | Graph ML vs. graph features | Planned |
