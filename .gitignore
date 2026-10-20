@@ -1,0 +1,16 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Data and experiment artefacts (downloaded / regenerated, never committed)
+data/
+mlruns/
+mlflow.db
+*.parquet
+
+# Local editor settings
+.claude/settings.local.json

@@ -1,0 +1,36 @@
+[project]
+name = "fraudkit"
+version = "0.1.0"
+description = "Fraud detection portfolio: shared utilities for imbalanced classification and evaluation"
+readme = "README.md"
+authors = [
+    { name = "barbieriht", email = "tcs.barbieri@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "imbalanced-learn>=0.14.2",
+    "kaggle>=2.2.4",
+    "lightgbm>=4.7.0",
+    "matplotlib>=3.11.2",
+    "mlflow>=3.17.1",
+    "numpy>=2.5.4",
+    "optuna>=5.0.0",
+    "pandas>=3.0.6",
+    "pyarrow>=25.0.1",
+    "scikit-learn>=1.9.1",
+    "seaborn>=0.13.2",
+    "shap>=0.54.1",
+    "xgboost>=3.4.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.15,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.4.0",
+    "jupyterlab>=4.6.4",
+    "pytest>=9.1.1",
+    "ruff>=0.17.1",
+]
