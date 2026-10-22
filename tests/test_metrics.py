@@ -37,3 +37,26 @@ def test_time_split_is_ordered_and_complete():
     tr, va, te = time_split(df)
     assert (len(tr), len(va), len(te)) == (60, 20, 20)
     assert tr.Time.max() < va.Time.min() and va.Time.max() < te.Time.min()
+
+
+def test_wilson_interval_contains_rate_and_shrinks_with_n():
+    from fraudkit.metrics import wilson_interval
+
+    lo1, hi1 = wilson_interval(5, 100)
+    lo2, hi2 = wilson_interval(500, 10_000)
+    assert lo1 < 0.05 < hi1 and lo2 < 0.05 < hi2
+    assert hi2 - lo2 < hi1 - lo1
+    assert wilson_interval(0, 50)[0] == 0
+
+
+def test_paired_bootstrap_detects_a_real_improvement():
+    from sklearn.metrics import average_precision_score
+
+    from fraudkit.metrics import paired_bootstrap_diff
+
+    rng = np.random.default_rng(0)
+    y = rng.random(5000) < 0.05
+    noise = rng.normal(0, 1, 5000)
+    weak, strong = y + noise, 2 * y + noise
+    diff, lo, _ = paired_bootstrap_diff(average_precision_score, y, weak, strong, n_boot=200)
+    assert diff > 0 and lo > 0

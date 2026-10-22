@@ -55,3 +55,29 @@ def fraud_report(y_true, scores, alert_rate=0.05):
         "pr_auc": average_precision_score(y_true, scores),
         f"recall@{alert_rate * 100:g}%": recall_at_alert_rate(y_true, scores, alert_rate),
     }
+
+
+def wilson_interval(successes, n, z=1.96):
+    """95 % Wilson score interval for a proportion; stays sensible for small counts and rates near 0."""
+    successes, n = np.asarray(successes, dtype=float), np.asarray(n, dtype=float)
+    p = successes / n
+    denom = 1 + z**2 / n
+    centre = (p + z**2 / (2 * n)) / denom
+    half = z * np.sqrt(p * (1 - p) / n + z**2 / (4 * n**2)) / denom
+    return centre - half, centre + half
+
+
+def paired_bootstrap_diff(metric, y_true, scores_a, scores_b, n_boot=500, level=0.95, seed=0):
+    """Difference metric(b) − metric(a) with a bootstrap interval, resampling the *same* rows
+    for both models. Far tighter than comparing two separate intervals, because the noise
+    from which rows happen to be in the sample is shared."""
+    y_true, a, b = map(np.asarray, (y_true, scores_a, scores_b))
+    rng = np.random.default_rng(seed)
+    diffs = []
+    for _ in range(n_boot):
+        idx = rng.integers(0, len(y_true), len(y_true))
+        if y_true[idx].min() == y_true[idx].max():
+            continue
+        diffs.append(metric(y_true[idx], b[idx]) - metric(y_true[idx], a[idx]))
+    lo, hi = np.quantile(diffs, [(1 - level) / 2, (1 + level) / 2])
+    return metric(y_true, b) - metric(y_true, a), lo, hi
