@@ -153,3 +153,43 @@ def time_split(df, fractions=(0.6, 0.2, 0.2), time_col="Time"):
     edges = np.cumsum([0, *fractions])
     cuts = (edges * len(df)).round().astype(int)
     return tuple(df.iloc[a:b].reset_index(drop=True) for a, b in pairwise(cuts))
+
+
+BAF_STRING_COLS = {"payment_type", "employment_status", "housing_status", "source", "device_os"}
+
+
+def load_baf(variant="Base"):
+    """Bank Account Fraud (Feedzai, NeurIPS 2022): 1M account-opening applications over 8 months.
+
+    Numbers come back as float32 (labels and flags as small integers), text as categoricals.
+    `variant` is "Base" or "Variant I" … "Variant V".
+    """
+    import pyarrow.parquet as pq
+
+    raw = RAW / "baf"
+    csv, parquet = raw / f"{variant}.csv", raw / f"{variant.replace(' ', '_')}.parquet"
+    if not parquet.exists():
+        if not csv.exists():
+            raw.mkdir(parents=True, exist_ok=True)
+            from kaggle.api.kaggle_api_extended import KaggleApi
+
+            api = KaggleApi()
+            api.authenticate()
+            api.dataset_download_file("sgpjesus/bank-account-fraud-dataset-neurips-2022",
+                                      f"{variant}.csv", path=raw)
+            import zipfile
+
+            for z in raw.glob("*.zip"):
+                with zipfile.ZipFile(z) as f:
+                    f.extractall(raw)
+                z.unlink()
+        _csv_to_parquet(csv, parquet, BAF_STRING_COLS)
+    table = pq.read_table(parquet)
+    df = table.to_pandas(self_destruct=True)
+    del table
+    for c in BAF_STRING_COLS:
+        df[c] = df[c].astype("category")
+    small_ints = ["fraud_bool", "month", "email_is_free", "phone_home_valid", "phone_mobile_valid",
+                  "has_other_cards", "foreign_request", "keep_alive_session", "device_fraud_count"]
+    df[small_ints] = df[small_ints].astype("int8")
+    return df

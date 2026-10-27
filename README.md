@@ -8,7 +8,7 @@ concepts, the strategies tried and the reasons behind each choice.
 |---|---|---|---|---|
 | 1 | [Credit card fraud](projects/01_ulb_creditcard/) | ULB Credit Card Fraud | Class imbalance, anomaly detection, cost-based decisions, SHAP | Done |
 | 2 | [E-commerce fraud](projects/02_ieee_cis/) | IEEE-CIS (Vesta) | Feature engineering, label delay, leakage, model staleness, SHAP | Done |
-| 3 | Account-opening fraud | Bank Account Fraud (Feedzai) | Fairness, distribution shift, alert budgets | Planned |
+| 3 | [Account-opening fraud](projects/03_bank_account_fraud/) | Bank Account Fraud (Feedzai) | Fixed-FPR operation, threshold drift, fairness audit | Done |
 | 4 | Money laundering | Elliptic Bitcoin | Graph ML vs. graph features | Planned |
 | 5 | Transaction behaviour | PaySim / Sparkov | Sequence features, demo app | Optional |
 
